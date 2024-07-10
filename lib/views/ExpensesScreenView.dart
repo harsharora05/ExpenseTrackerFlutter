@@ -1,5 +1,3 @@
-// ignore_for_file: non_constant_identifier_names
-
 import 'package:expense_tracker/views/AddExpensesView.dart';
 import 'package:expense_tracker/widgets/chart/chart.dart';
 import 'package:expense_tracker/widgets/expenses_list_widget.dart';
@@ -51,6 +49,7 @@ class _ExpensesScreenViewState extends State<ExpensesScreenView> {
       child: Text("No Expenses Found...Enter Expenses!!!"),
     );
 
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Expense Tracker"),
@@ -68,20 +67,39 @@ class _ExpensesScreenViewState extends State<ExpensesScreenView> {
         ],
       ),
       body: Container(
-          child: Column(
-        children: [
-          Chart(expenses: _Registered_expenses),
-          const SizedBox(
-            height: 30,
-          ),
-          _Registered_expenses.isNotEmpty
-              ? expensesWidget(
-                  expenses: _Registered_expenses,
-                  onRemoveExpense: _removeExpense,
+          child: width < 600
+              ? Column(
+                  children: [
+                    Chart(expenses: _Registered_expenses),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(
+                      child: _Registered_expenses.isNotEmpty
+                          ? expensesWidget(
+                              expenses: _Registered_expenses,
+                              onRemoveExpense: _removeExpense,
+                            )
+                          : maincontent,
+                    )
+                  ],
                 )
-              : maincontent
-        ],
-      )),
+              : Row(
+                  children: [
+                    Expanded(child: Chart(expenses: _Registered_expenses)),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Expanded(
+                      child: _Registered_expenses.isNotEmpty
+                          ? expensesWidget(
+                              expenses: _Registered_expenses,
+                              onRemoveExpense: _removeExpense,
+                            )
+                          : maincontent,
+                    )
+                  ],
+                )),
     );
   }
 }

@@ -74,84 +74,93 @@ class _FormScreenViewState extends State<FormScreenView> {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       appBar: AppBar(
         title: const Text("Add Expenses"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _TitleController,
-              decoration: const InputDecoration(label: Text("Title")),
-              maxLength: 50,
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _AmountController,
-                    keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                        label: Text("Amount"),
-                        prefixIcon: Icon(Icons.currency_rupee)),
+      body: SafeArea(
+        child: SizedBox(
+          height: double.infinity,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(16, 16, 16, keyboardSpace + 16),
+              child: Column(
+                children: [
+                  TextField(
+                    controller: _TitleController,
+                    decoration: const InputDecoration(label: Text("Title")),
+                    maxLength: 50,
                   ),
-                ),
-                const SizedBox(
-                  width: 5,
-                ),
-                Expanded(
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.end,
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
                     children: [
-                      SelectedDate == null
-                          ? const Text("No Selected Date")
-                          : Text(formatter
-                              .format(SelectedDate as DateTime)
-                              .toString()),
-                      IconButton(
-                          onPressed: _getDate,
-                          icon: const Icon(Icons.calendar_month))
+                      Expanded(
+                        child: TextField(
+                          controller: _AmountController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                              label: Text("Amount"),
+                              prefixIcon: Icon(Icons.currency_rupee)),
+                        ),
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Expanded(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            SelectedDate == null
+                                ? const Text("No Selected Date")
+                                : Text(formatter
+                                    .format(SelectedDate as DateTime)
+                                    .toString()),
+                            IconButton(
+                                onPressed: _getDate,
+                                icon: const Icon(Icons.calendar_month))
+                          ],
+                        ),
+                      )
                     ],
                   ),
-                )
-              ],
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      DropdownButton(
+                          value: selected_category,
+                          items: Categories.values.map((category) {
+                            return DropdownMenuItem(
+                                value: category,
+                                child: Text(category.name.toUpperCase()));
+                          }).toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selected_category = value!;
+                            });
+                          }),
+                      Row(
+                        children: [
+                          ElevatedButton(
+                              onPressed: _saveExpenses,
+                              child: const Text("Save")),
+                          TextButton(
+                              onPressed: (Navigator.of(context).pop),
+                              child: const Text("Cancel"))
+                        ],
+                      )
+                    ],
+                  )
+                ],
+              ),
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                DropdownButton(
-                    value: selected_category,
-                    items: Categories.values.map((category) {
-                      return DropdownMenuItem(
-                          value: category,
-                          child: Text(category.name.toUpperCase()));
-                    }).toList(),
-                    onChanged: (value) {
-                      setState(() {
-                        selected_category = value!;
-                      });
-                    }),
-                Row(
-                  children: [
-                    ElevatedButton(
-                        onPressed: _saveExpenses, child: const Text("Save")),
-                    TextButton(
-                        onPressed: (Navigator.of(context).pop),
-                        child: const Text("Cancel"))
-                  ],
-                )
-              ],
-            )
-          ],
+          ),
         ),
       ),
     );
